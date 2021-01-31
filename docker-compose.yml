@@ -1,0 +1,26 @@
+version: '2.2'
+
+services:
+
+  app:
+    build: .
+    command: ["yarn", "dev"]
+    tty: true
+    stdin_open: true
+    environment:
+      - DB_URI=postgres://trails:trails@db:5432/trails
+    volumes:
+      - '.:/app'
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+
+  neo4j:
+    image: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/test
+    volumes:
+      - $HOME/neo4j/data:/data
+    ports:
+      - "7474:7474"
+      - "7687:7687"
