@@ -15,11 +15,7 @@ export default function ActivityForm(props) {
   const handleFormSubmit = (evt) => {
     evt.preventDefault()
 
-    let activity = new Activity(
-      state.title,
-      state.lat,
-      state.lon
-    )
+    let activity = new Activity(state)
     props.handleNewActivity(activity)
     resetDefaults()
   }

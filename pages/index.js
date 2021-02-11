@@ -1,34 +1,30 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { useState } from 'react'
+import ConfigForm from '../components/ConfigForm'
+import ActivityWidget from '../components/ActivityWidget'
 import ActivityForm from '../components/ActivityForm'
-import DataTable from '../components/ui/DataTable'
-import Map from '../components/ui/Map'
+import Modal from '../components/ui/Modal'
 
-
+const defaultLatitude = null
+const defaultLongitude = null
 
 export default function Home() {
-
-  const [state, setState] = useState({
-    trailModalOpen: false,
-    trails: []
+  const [config, setConfig] = useState({
+    start: [defaultLatitude, defaultLongitude],
+    end: [defaultLatitude, defaultLongitude]
   })
+  const [activities, setActivities] = useState([])
+  const [activityModalOpen, setActivityModalOpen] = useState(false)
 
-  const handleAddTrail = (evt) => {
-    setState({
-      ...state,
-      trailModalOpen: ! state.trailModalOpen
-    })
+  const toggleActivityModal = (evt) => {
+    setActivityModalOpen(!activityModalOpen)
   }
 
   const handleNewActivity = (activity) => {
     debugger
-    setState({
-      ...state,
-      trails: state.trails.concat(activity),
-      trailModalOpen: false
-    })
-
+    setActivities(activities.concat(activity))
+    setActivityModalOpen(false)
   }
 
   return (
@@ -39,42 +35,13 @@ export default function Home() {
       </Head>
 
       <main className="container">
-        <div className="columns">
-          <div className="column">
-            <section className="section">
-              <h1 className="title">
-                Activities
-              </h1>
-              <p className="subtitle">
-                <button onClick={handleAddTrail} className="button">Add</button>
-              </p>
-            </section>
-            <section className="section">
-              <DataTable columns={['title']} data={state.trails} />
-            </section>
-
-
-          </div>
-          <div className="column is-two-thirds">
-            <Map />
-          </div>
-
-        </div>
-
+        <ConfigForm />
+        <ActivityWidget trails={activities} handleAddTrail={toggleActivityModal} />
       </main>
 
-      <div className={`modal ${state.trailModalOpen ? 'is-active' : ''}`}>
-        <div className="modal-background"></div>
-        <div className="modal-card">
-          <header className="modal-card-head">
-            <p className="modal-card-title">New Activity</p>
-            <button className="delete" aria-label="close" onClick={handleAddTrail}></button>
-          </header>
-          <section className="modal-card-body">
-            <ActivityForm handleNewActivity={handleNewActivity} />
-          </section>
-        </div>
-      </div>
+      <Modal onCloseRequest={toggleActivityModal} title={"New Activity"} isOpen={activityModalOpen} >
+        <ActivityForm handleNewActivity={handleNewActivity} />
+      </Modal>
 
       <footer>
 

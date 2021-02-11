@@ -10,7 +10,6 @@ export default function DataTable(props) {
     <table class="table">
       <thead>
         <tr>
-
           {columns.map( columnName => {
             return <th key={columnName}>{columnName}</th>
           })}

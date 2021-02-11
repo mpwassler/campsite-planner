@@ -1,14 +1,42 @@
-import Activity from '../../modals/Activity'
-import {save, list} from '../../db/Repository'
+import Activity from '../../models/Activity'
+import {save, list, relation} from '../../db/Repository'
+import RIDB from '../../services/ridb'
+import {getRouteData} from '../../services/directions'
 
 function index(req, res) {
 
 }
 
-function create(req, res) {
+async function create(req, res) {
   const { body } = req
-  console.log(body)
 
+   let activity = new Activity(body)
+
+   let campsites = await RIDB.search({
+     latitude: activity.lat,
+     longitude: activity.lon
+   })
+
+   await save(activity)
+
+
+   let matrix = await getRouteData([activity].concat(campsites))
+
+   for (var i = 0; i < campsites.length; i++) {
+     let distance = matrix.distances[0][i + 1]
+     let duration = matrix.durations[0][i + 1]
+     let campsite = campsites[i]
+
+     await save(campsite)
+     await relation("ROAD", activity, campsite, duration)
+
+     // console.log(campsite, distance, duration)
+   }
+
+   // console.log(matrix)
+
+   res.status(200).end(`ok`)
+   // .json(result)
 }
 
 export default function handler(req, res) {

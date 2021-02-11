@@ -1,11 +1,27 @@
 
 export default class Activity {
 
-  constructor(title, lat, lon) {
+  constructor(attributes) {
     this.EnitiyName = 'Activity'
 
-    this.title = title
-    this.lat = lat
-    this.lon = lon
+    this.EnitiyMapping = `
+      {
+        title: $title,
+        lat: $lat,
+        lon: $lon
+      }
+    `
+
+    this.title = attributes.title
+    this.lat   = attributes.lat
+    this.lon   = attributes.lon
+  }
+
+  toProperties() {
+    return {
+      title: this.title,
+      lat: this.lat,
+      lon: this.lon,
+    }
   }
 }
