@@ -1,22 +1,33 @@
 
 export default class Lodging {
 
-  constructor(attributes) {
-    this.EnitiyName = 'Lodging'
+  static EnitiyMapping = `
+    {
+      name: $name,
+      lat: $lat,
+      lon: $lon,
+      thirdPartyId: $thirdPartyId
+    }
+  `
 
-    this.EnitiyMapping = `
-      {
-        name: $name,
-        lat: $lat,
-        lon: $lon,
-        thirdPartyId: $thirdPartyId
-      }
-    `
+  static EnitiyName = 'Lodging'
+
+  constructor(attributes) {
+    this.EnitiyName = this.constructor.EnitiyName
+    this.EnitiyMapping = this.constructor.EnitiyMapping
 
     this.name = attributes.name
     this.lat   = attributes.lat
     this.lon   = attributes.lon
     this.thirdPartyId = attributes.thirdPartyId
+  }
+
+  get activities() {
+    return this.activites
+  }
+
+  set activities(activities) {
+    this.activites = activities
   }
 
   toProperties() {

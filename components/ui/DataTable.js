@@ -7,7 +7,7 @@ export default function DataTable(props) {
   console.log(data)
 
   return (
-    <table class="table">
+    <table class="table is-fullwidth">
       <thead>
         <tr>
           {columns.map( columnName => {

@@ -12,12 +12,27 @@ export default function ActivityForm(props) {
 
   const [state, setState] = useState(defaultState)
 
-  const handleFormSubmit = (evt) => {
+  const postData = async (data) => {
+    const response = await fetch('/api/activity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+  }
+
+  const handleFormSubmit = async (evt) => {
     evt.preventDefault()
 
     let activity = new Activity(state)
-    props.handleNewActivity(activity)
+
+    await postData(activity.toProperties())
+
+    props.handleCreate(activity)
+
     resetDefaults()
+
   }
 
   const resetDefaults = () => {

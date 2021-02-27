@@ -19,6 +19,7 @@ services:
     image: neo4j
     environment:
       - NEO4J_AUTH=neo4j/test
+      - NEO4JLABS_PLUGINS='["graph-data-science"]'
     volumes:
       - $HOME/neo4j/data:/data
     ports:

@@ -1,30 +1,54 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ConfigForm from '../components/ConfigForm'
 import ActivityWidget from '../components/ActivityWidget'
+import LodgingWidget from '../components/LodgingWidget'
 import ActivityForm from '../components/ActivityForm'
 import Modal from '../components/ui/Modal'
 
 const defaultLatitude = null
 const defaultLongitude = null
 
-export default function Home() {
+const getUrl = async (url) => {
+  const response = await fetch(url)
+  const jsonBody = await response.json()
+  return jsonBody
+}
+
+const getActivities = () => {
+  return getUrl('/api/activity')
+}
+
+const getLodging = () => {
+  return getUrl('/api/lodgeing')
+}
+
+export default function Home(props) {
   const [config, setConfig] = useState({
-    start: [defaultLatitude, defaultLongitude],
-    end: [defaultLatitude, defaultLongitude]
+    allowedDistance: 0
   })
   const [activities, setActivities] = useState([])
+  const [lodgings, setLodgings] = useState([])
   const [activityModalOpen, setActivityModalOpen] = useState(false)
+
+  useEffect( async () => {
+     let activities = await getActivities()
+     setActivities(activities)
+   }, [])
 
   const toggleActivityModal = (evt) => {
     setActivityModalOpen(!activityModalOpen)
   }
 
-  const handleNewActivity = (activity) => {
-    debugger
-    setActivities(activities.concat(activity))
+  const handleNewActivity = async (activity) => {
+    setActivities(await getActivities())
     setActivityModalOpen(false)
+  }
+
+  const loadLodgings = async () => {
+    let lodgingData = await getLodging()
+    setLodgings(lodgingData)
   }
 
   return (
@@ -35,12 +59,17 @@ export default function Home() {
       </Head>
 
       <main className="container">
-        <ConfigForm />
-        <ActivityWidget trails={activities} handleAddTrail={toggleActivityModal} />
+        <ConfigForm onConfigUpdate={setConfig} />
+        <ActivityWidget activities={activities} handleAddTrail={toggleActivityModal}>
+          { activities.length > 0 &&
+            <button className="button is-small" onClick={loadLodgings}>Find Campgrounds</button>
+          }
+        </ActivityWidget>
+        <LodgingWidget lodgings={lodgings} />
       </main>
 
       <Modal onCloseRequest={toggleActivityModal} title={"New Activity"} isOpen={activityModalOpen} >
-        <ActivityForm handleNewActivity={handleNewActivity} />
+        <ActivityForm handleCreate={handleNewActivity} />
       </Modal>
 
       <footer>

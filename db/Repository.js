@@ -61,5 +61,11 @@ export function execute(query) {
 export async function list(entity, limit = 100) {
   let query = `MATCH (n:${entity.EnitiyName}) RETURN n LIMIT ${limit}`
   let result = await connect(query)
-  return result
+
+  let enitities = result.records.map(r => {
+    let [data] = r._fields
+    return new entity({ ...data.properties, id: data.identity.low })
+  })
+
+  return enitities
 }

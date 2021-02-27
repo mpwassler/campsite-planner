@@ -1,6 +1,6 @@
 html,
 body {
-  background: hsl(0, 0%, 97%);
+  background: hsl(200, 100%, 98%);
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
@@ -25,7 +25,11 @@ a {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 600px;
+  height: 500px;
+}
+
+.map-side-bar {
+  min-height: 500px;
 }
 
 .sidebarStyle {

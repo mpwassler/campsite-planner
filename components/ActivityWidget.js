@@ -1,27 +1,43 @@
 import { useState } from 'react'
 import DataTable from './ui/DataTable'
-import Map from './ui/Map'
+
+import ActivityMap from './ActivityMap'
 
 export default function ActivityWidget(props) {
 
+  function MapDisplay(activities) {
+    if (activities && activities.length > 0) {
+       return (<ActivityMap activities={activities} />)
+    } else {
+      return (
+        <div> Add activities to see them on the map</div>
+      )
+    }
+  }
+
   return (
-    <div className="columns">
-      <div className="column">
-        <section className="section">
-          <h1 className="title">
-            Activities
-          </h1>
-          <p className="subtitle">
-            <button onClick={props.handleAddTrail} className="button">Add</button>
-          </p>
-        </section>
-        <section className="section">
-          <DataTable columns={['title']} data={props.trails} />
-        </section>
+    <section className="block">
+      <div className="columns">
+        <div className="column">
+          <div className="box map-side-bar">
+            <section>
+              <h2>
+                Activities
+              </h2>
+              <p className="subtitle">
+                <button onClick={props.handleAddTrail} className="button is-small">Add</button>
+              </p>
+            </section>
+            <section >
+              <DataTable columns={['title']} data={props.activities} />
+              {props.children}
+            </section>
+          </div>
+        </div>
+        <div className="column is-two-thirds">
+          {MapDisplay(props.activities)}
+        </div>
       </div>
-      <div className="column is-two-thirds">
-        <Map />
-      </div>
-    </div>
+    </section>
   )
 }

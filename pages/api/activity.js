@@ -3,8 +3,11 @@ import {save, list, relation} from '../../db/Repository'
 import RIDB from '../../services/ridb'
 import {getRouteData} from '../../services/directions'
 
-function index(req, res) {
+async function index(req, res) {
 
+  let results = await list(Activity)
+
+  res.status(200).json(results)
 }
 
 async function create(req, res) {
