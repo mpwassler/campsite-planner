@@ -6,7 +6,14 @@ function _MapMarker(props) {
   const [marker, setMarker] = useState(null)
 
   useEffect(() => {
-    setMarker(new Marker().setLngLat([props.lon, props.lat]))
+    if (props.renderMarker) {
+      var el = document.createElement('div')
+      el.innerHTML = props.renderMarker()
+      el.className = 'marker'
+      setMarker(new Marker(el).setLngLat([props.lon, props.lat]))
+    } else {
+      setMarker(new Marker().setLngLat([props.lon, props.lat]))
+    }
   },[])
 
   useEffect(() => {

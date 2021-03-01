@@ -1,3 +1,4 @@
+import {assignColor} from '../lib/colorpicker'
 
 export default class Lodging {
 
@@ -20,6 +21,7 @@ export default class Lodging {
     this.lat   = attributes.lat
     this.lon   = attributes.lon
     this.thirdPartyId = attributes.thirdPartyId
+    this.color = assignColor()
   }
 
   get activities() {

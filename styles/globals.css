@@ -45,3 +45,39 @@ a {
   font-weight: bold;
 }
 
+thead p, .lodgings h3 {
+  text-transform: capitalize;
+}
+
+.tag-inner {
+  background-color: #fff;
+  border-radius: 25px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  line-height: 23px;
+}
+
+.mapboxgl-canvas-container svg {
+  max-width: 45px;
+  height: auto;
+  display: block;
+}
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}

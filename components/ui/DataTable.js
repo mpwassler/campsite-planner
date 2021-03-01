@@ -11,7 +11,7 @@ export default function DataTable(props) {
       <thead>
         <tr>
           {columns.map( columnName => {
-            return <th key={columnName}>{columnName}</th>
+            return <th key={columnName}><p>{columnName}</p></th>
           })}
         </tr>
       </thead>
@@ -20,7 +20,7 @@ export default function DataTable(props) {
           return (
             <tr>
               {columns.map( columnName => {
-                return <th>{row[columnName]}</th>
+                return <td><p>{row[columnName]}</p></td>
               })}
             </tr>
           )

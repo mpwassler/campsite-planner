@@ -67,18 +67,21 @@ const Map = (props) => {
 
   useEffect(() => {
     if(mapObj && bounds) {
-      mapObj.fitBounds(bounds, {padding: {left: 100, bottom: 100, right: 100, top: 100}, animate: false})
+      mapObj.fitBounds(bounds, {padding: {left: 50, bottom: 50, right: 50, top: 50}, animate: false})
     }
 
   }, [bounds])
 
   return (
     <div className="map">
-      <div className='sidebarStyle'>
-        <div>
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+      { 1 != 1 &&
+
+        <div className='sidebarStyle'>
+          <div>
+            Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+          </div>
         </div>
-      </div>
+      }
       <div className='map-container box' ref={mapContainerRef} />
 
       <MapContext.Provider value={mapObj}>

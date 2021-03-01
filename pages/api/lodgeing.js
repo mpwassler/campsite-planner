@@ -56,7 +56,11 @@ async function index(req, res) {
 
   let lodgings = []
 
-  let names = await execute(`MATCH (n:Activity) RETURN COLLECT(n.title)`)
+  let names = await execute(`
+    MATCH (n:Activity)
+    WHERE (n)-->(:Lodging)
+    RETURN COLLECT(n.title)
+  `)
 
   let activityNames = new Set(parseResult(names))
 

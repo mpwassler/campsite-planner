@@ -60,7 +60,7 @@ export default function Home(props) {
 
       <main className="container">
         <ConfigForm onConfigUpdate={setConfig} />
-        <ActivityWidget activities={activities} handleAddTrail={toggleActivityModal}>
+        <ActivityWidget lodgings={lodgings} activities={activities} handleAddTrail={toggleActivityModal}>
           { activities.length > 0 &&
             <button className="button is-small" onClick={loadLodgings}>Find Campgrounds</button>
           }
