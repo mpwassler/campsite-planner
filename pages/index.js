@@ -6,75 +6,54 @@ import ActivityWidget from '../components/ActivityWidget'
 import LodgingWidget from '../components/LodgingWidget'
 import ActivityForm from '../components/ActivityForm'
 import Modal from '../components/ui/Modal'
-
-const defaultLatitude = null
-const defaultLongitude = null
-
-const getUrl = async (url) => {
-  const response = await fetch(url)
-  const jsonBody = await response.json()
-  return jsonBody
-}
-
-const getActivities = () => {
-  return getUrl('/api/activity')
-}
-
-const getLodging = () => {
-  return getUrl('/api/lodgeing')
-}
+import {Graph, matchLodging} from '../graph/graph'
+import {makePolyline} from '../services/polyline'
 
 export default function Home(props) {
-  const [config, setConfig] = useState({
-    allowedDistance: 0
-  })
-  const [activities, setActivities] = useState([])
-  const [lodgings, setLodgings] = useState([])
-  const [activityModalOpen, setActivityModalOpen] = useState(false)
 
-  useEffect( async () => {
-     let activities = await getActivities()
-     setActivities(activities)
-   }, [])
+  const [graph, setGraph]         = useState(new Graph())
+  const [modelOpen, setModalOpen] = useState(false)
+  
+  const toggleModal = (evt) => { setModalOpen(!modelOpen) }
 
-  const toggleActivityModal = (evt) => {
-    setActivityModalOpen(!activityModalOpen)
+  const handleNewActivity = async (res) => {    
+    const newGraph = Graph.fromJson(await res.json())
+    setGraph(graph.merge(newGraph))
+    setModalOpen(false)    
   }
 
-  const handleNewActivity = async (activity) => {
-    setActivities(await getActivities())
-    setActivityModalOpen(false)
+  const onDelete = (data) => {  
+    setGraph( graph.delete(data.name) )
   }
 
-  const loadLodgings = async () => {
-    let lodgingData = await getLodging()
-    setLodgings(lodgingData)
-  }
-
+  const activities = graph.filterNodes(n => n.type == 'activity')
+  const lodgings   = matchLodging(graph)
+  const lodgingEdges = lodgings.flatMap((l) => l.edges(graph))
+  
+  let routes = Promise.all(lodgingEdges.map(async (e) => makePolyline(e, graph)))
   return (
     <div>
       <Head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
         <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
       </Head>
+      <main className="container pt-5">
+        {/*<ConfigForm onConfigUpdate={setConfig} />*/}
+        <ActivityWidget graph={graph} 
+                        lodgings={lodgings} 
+                        activities={activities} 
+                        handleAddTrail={toggleModal}
+                        routes={routes}
+                        onDelete={onDelete}
+                         />          
+                        
+        <LodgingWidget lodgings={lodgings} 
+                       graph={graph}/>
 
-      <main className="container">
-        <ConfigForm onConfigUpdate={setConfig} />
-        <ActivityWidget lodgings={lodgings} activities={activities} handleAddTrail={toggleActivityModal}>
-          { activities.length > 0 &&
-            <button className="button is-small" onClick={loadLodgings}>Find Campgrounds</button>
-          }
-        </ActivityWidget>
-        <LodgingWidget lodgings={lodgings} />
       </main>
-
-      <Modal onCloseRequest={toggleActivityModal} title={"New Activity"} isOpen={activityModalOpen} >
+      <Modal onCloseRequest={toggleModal} title={"New Activity"} isOpen={modelOpen} >
         <ActivityForm handleCreate={handleNewActivity} />
       </Modal>
-
-      <footer>
-
-      </footer>
     </div>
   )
 }

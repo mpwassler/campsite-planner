@@ -1,36 +1,24 @@
+import {Node} from '../graph/graph'
 
-export default class Activity {
-
-  static EnitiyMapping = `
-    {
-      title: $title,
-      lat: $lat,
-      lon: $lon
-    }
-  `
-
-  static EnitiyName = 'Activity'
-
-
-  constructor(attributes) {
-    this.EnitiyName = this.constructor.EnitiyName
-    this.EnitiyMapping = this.constructor.EnitiyMapping
-    let attrs = attributes || {}
-
-
-    this.title = attrs.title
-    this.lat   = attrs.lat
-    this.lon   = attrs.lon
-    this.id   = attrs.id
+export default class Activity extends Node {
+  constructor(properties = {}) {
+    super(properties.name, {
+      type: 'activity',
+      properties: {
+        ...properties
+      }
+    })
+    this.name = properties.name
+    this.lat  = properties.lat
+    this.lon  = properties.lon
+    this.id   = properties.id
   }
 
   toProperties() {
-    let json = {
-      title: this.title,
+    return {
+      name: this.name,
       lat: this.lat,
       lon: this.lon,
     }
-    if(this.id) json['id'] = this.id
-    return json
   }
 }

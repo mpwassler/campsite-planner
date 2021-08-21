@@ -1,8 +1,4 @@
-import {assignColor} from '../lib/colorpicker'
-
-export default class Lodging {
-
-  static EnitiyMapping = `
+const EnitiyMapping = `
     {
       name: $name,
       lat: $lat,
@@ -10,18 +6,19 @@ export default class Lodging {
       thirdPartyId: $thirdPartyId
     }
   `
+const EnitiyName = 'Lodging'
 
-  static EnitiyName = 'Lodging'
+export default class Lodging {
 
   constructor(attributes) {
-    this.EnitiyName = this.constructor.EnitiyName
-    this.EnitiyMapping = this.constructor.EnitiyMapping
+    this.EnitiyName = EnitiyName
+    this.EnitiyMapping = EnitiyMapping
 
     this.name = attributes.name
     this.lat   = attributes.lat
     this.lon   = attributes.lon
     this.thirdPartyId = attributes.thirdPartyId
-    this.color = assignColor()
+    this.color = "#008b8b"   
   }
 
   get activities() {

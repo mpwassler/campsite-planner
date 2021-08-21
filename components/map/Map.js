@@ -2,12 +2,14 @@ import React, { useRef, useEffect, useState, createContext } from 'react'
 import mapboxgl from 'mapbox-gl'
 import '../../styles/Map.module.css'
 
-mapboxgl.accessToken =
-  'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA'
+if(mapboxgl) {
+  mapboxgl.accessToken =
+    'pk.eyJ1IjoibXdhc3NsZXIiLCJhIjoiY2tzZ3g1ZmZ0MW84MDJ2bnZheHhpdDVqMyJ9.RZX9Op7ZzyxD6jolIxUFoA'
+}
 
 export const MapContext = createContext(null)
 
-const boundsMatch = (a, b) => {
+const boundsMatch = (a, b) => {    
   if(!a || !b) return false
   return (
     a._sw.lng == b._sw.lng &&
@@ -24,7 +26,28 @@ const Map = (props) => {
   const [lat, setLat] = useState(34)
   const [zoom, setZoom] = useState(1.5)
   const [mapObj, setMapObj] = useState(null)
-  const [bounds, setBounds] = useState(null)
+  const [bounds, setBounds] = useState({
+    _ne: { lng: 0, lat: 0 },
+    _sw: { lng: 0, lat: 0 },
+  })
+
+  const fitMapToBounds = () => {
+    if(!props.children) return
+
+    let children = React.Children.toArray(props.children)
+    if(children.length < 1) return
+
+    let newBounds = new mapboxgl.LngLatBounds(children[0].props, children[0].props)
+    let coords = children.forEach((child) => {
+      
+      if(child.props.lon) {
+        newBounds.extend([child.props.lon, child.props.lat])
+      }
+    })
+    if(!boundsMatch(newBounds, bounds)) {
+      setBounds(newBounds)
+    }
+  }
 
   // Initialize map when component mounts
   useEffect(() => {
@@ -35,34 +58,31 @@ const Map = (props) => {
       zoom: zoom
     })
 
-    setMapObj(map)
+    map.on('load', () => {
+      setMapObj(map)
+      fitMapToBounds()
 
-    // Add navigation control (the +/- zoom buttons)
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+      // Add navigation control (the +/- zoom buttons)
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
-    map.on('move', () => {
-      setLng(map.getCenter().lng.toFixed(4))
-      setLat(map.getCenter().lat.toFixed(4))
-      setZoom(map.getZoom().toFixed(2))
+      map.on('move', () => {
+        setLng(map.getCenter().lng.toFixed(4))
+        setLat(map.getCenter().lat.toFixed(4))
+        setZoom(map.getZoom().toFixed(2))
+      })
     })
 
+
+    
+
     // Clean up on unmount
-    return () => map.remove()
+    return () => {
+      if(mapObj) mapObj.remove()
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if(!props.children) return
-
-    let children = React.Children.toArray(props.children)
-    if(children.length < 1) return
-
-    let newBounds = new mapboxgl.LngLatBounds(children[0].props, children[0].props)
-    let coords = children.forEach((child) => {
-      newBounds.extend([child.props.lon, child.props.lat])
-    })
-    if(!boundsMatch(newBounds, bounds)) {
-      setBounds(newBounds)
-    }
+    fitMapToBounds()
   })
 
   useEffect(() => {
@@ -84,9 +104,11 @@ const Map = (props) => {
       }
       <div className='map-container box' ref={mapContainerRef} />
 
-      <MapContext.Provider value={mapObj}>
-        {props.children}
-      </MapContext.Provider>
+      { !!mapObj &&
+        <MapContext.Provider value={mapObj}>
+              {props.children}
+        </MapContext.Provider>
+      }
     </div>
   )
 }

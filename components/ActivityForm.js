@@ -1,19 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Activity from '../models/Activity'
 import TextField from './form/TextField'
 
 const defaultState = {
-  title: '',
+  name: '',
   lat: '',
   lon: ''
 }
 
 export default function ActivityForm(props) {
 
-  const [state, setState] = useState(defaultState)
+  const [state, setState] = useState({...defaultState})
 
   const postData = async (data) => {
-    const response = await fetch('/api/activity', {
+    return fetch('/api/activity', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -24,20 +24,18 @@ export default function ActivityForm(props) {
 
   const handleFormSubmit = async (evt) => {
     evt.preventDefault()
-
-    let activity = new Activity(state)
-
-    await postData(activity.toProperties())
-
-    props.handleCreate(activity)
-
-    resetDefaults()
-
+    let activityProps = new Activity(state).toProperties()
+    let response
+    if(props.postForm) {
+      response = await props.postForm(activityProps)
+    } else {
+      response = await postData(activityProps)
+    }
+    
+    setState(defaultState)
+    props.handleCreate(response)
   }
 
-  const resetDefaults = () => {
-     setState(defaultState)
-  }
 
   const handleFormChange = (evt) => {
     setState({
@@ -48,10 +46,10 @@ export default function ActivityForm(props) {
 
   return (
     <form onSubmit={handleFormSubmit}>
-      <TextField label={"Title"} onChange={handleFormChange} value={state.title} name={"title"} placeholder={"title"} />
+      <TextField label={"Title"} onChange={handleFormChange} value={state.name} name={"name"} placeholder={"title"} />
       <TextField label={"Latitude"} onChange={handleFormChange} value={state.lat} name={"lat"} placeholder={"Lat"} />
       <TextField label={"Longitude"} onChange={handleFormChange} value={state.lon} name={"lon"} placeholder={"Lon"} />
-      <button type="submit" className="button is-success">Save changes</button>
+      <button role="button" name="submit" type="submit" className="button is-success">Save changes</button>
     </form>
   )
 
