@@ -1,25 +1,18 @@
 import { useState } from 'react'
-import { CSSTransitionGroup } from 'react-transition-group'
 import LodgingCard from './LodgingCard'
 
 export default function LodgingWidget(props) {
-
-  let lodgings = props.lodgings
-
+  const {
+    lodgings,
+    graph
+  } = props
   return (
-    <div className="lodgings">
-      <CSSTransitionGroup
-        transitionName="example"
-        transitionAppear={true}
-        transitionAppearTimeout={500}
-        transitionEnter={false}
-        transitionLeave={false}>
+    <div className="lodgings columns">
         {!!lodgings && lodgings.map((lodging, cnt) => {
           return (
-            <LodgingCard lodging={lodging} key={cnt} cnt={cnt} />
+            <LodgingCard lodging={lodging} graph={graph} key={cnt} cnt={cnt} />
           )
         })}
-      </CSSTransitionGroup>
     </div>
   )
 }

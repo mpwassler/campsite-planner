@@ -1,16 +1,17 @@
 export default function TextField(props) {
   return (
-    <div class="field is-horizontal">
-      <div class="field-label is-normal">
-        <label class="label">{props.label}</label>
+    <div className="field is-horizontal">
+      <div className="field-label is-normal">
+        <label htmlFor={props.name} className="label">{props.label}</label>
       </div>
-      <div class="field-body">
-        <div class="field">
-          <p class="control">
+      <div className="field-body">
+        <div className="field">
+          <p className="control">
              <input onChange={props.onChange}
-                    value={props.title}
+                    value={props.value}
                     name={props.name}
-                    class="input"
+                    id={props.name}
+                    className="input"
                     type="text"
                     placeholder={props.placeholder} />
           </p>

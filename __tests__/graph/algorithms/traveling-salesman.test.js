@@ -1,12 +1,12 @@
-import { Graph, TSP } from "../../../graph/graph"
+import { Graph, Node, TSP } from "../../../graph/graph"
 
 test('can get the shortest path through all nodes', () => {
   let graph = new Graph()
 
-  graph.addNode("node 1")
-  graph.addNode("node 2")
-  graph.addNode("node 3")
-  graph.addNode("node 4")
+  graph.addNode(new Node("node 1"))
+  graph.addNode(new Node("node 2"))
+  graph.addNode(new Node("node 3"))
+  graph.addNode(new Node("node 4"))
 
   graph.addEdge("node 1", "node 2", 10)
   graph.addEdge("node 1", "node 4", 20)

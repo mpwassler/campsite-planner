@@ -40,12 +40,12 @@ export default function ConfigForm(props) {
                 <div class="select is-small">
                   <select value={distance} onChange={updateDistance}>
                     <option value="0">-- Choose --</option>
-                    <option value="900">15 minutes</option>
-                    <option value="1800">30 minutes</option>
-                    <option value="2700">45 minutes</option>
-                    <option value="3600">1 hour</option>
-                    <option value="5400">1 hour 30 minutes</option>
-                    <option value="7200">2 hours</option>
+                    <option value="900">  15 minutes</option>
+                    <option value="1800"> 30 minutes</option>
+                    <option value="2700"> 45 minutes</option>
+                    <option value="3600">  1 hour</option>
+                    <option value="5400">  1 hour 30 minutes</option>
+                    <option value="7200">  2 hours</option>
                   </select>
                 </div>
               </div>

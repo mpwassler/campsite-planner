@@ -1,7 +1,6 @@
 version: '2.2'
 
 services:
-
   app:
     build: .
     command: ["yarn", "dev"]
@@ -14,14 +13,3 @@ services:
       - /app/node_modules
     ports:
       - "3000:3000"
-
-  neo4j:
-    image: neo4j
-    environment:
-      - NEO4J_AUTH=neo4j/test
-      - NEO4JLABS_PLUGINS='["graph-data-science"]'
-    volumes:
-      - $HOME/neo4j/data:/data
-    ports:
-      - "7474:7474"
-      - "7687:7687"

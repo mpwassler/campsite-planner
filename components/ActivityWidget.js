@@ -5,11 +5,17 @@ import ActivityMap from './ActivityMap'
 
 export default function ActivityWidget(props) {
 
-  let { activities } = props
+  let { activities, routes, graph } = props
+
+  const activityData = activities.map(a => a.properties)
 
   function MapDisplay({activities, lodgings}) {
     if (activities && activities.length > 0) {
-       return (<ActivityMap activities={activities} lodgings={lodgings} />)
+       return (<ActivityMap 
+                  activities={activities} 
+                  lodgings={lodgings}
+                  routes={routes} 
+                  graph={routes} />)
     } else {
       return (
         <div> Add activities to see them on the map</div>
@@ -42,7 +48,7 @@ export default function ActivityWidget(props) {
                 </div>
               </section>
               <section >
-                <DataTable columns={['title']} data={props.activities} />
+                <DataTable onDelete={props.onDelete} columns={['name']} data={activityData} />
                 {props.children}
               </section>
             </div>

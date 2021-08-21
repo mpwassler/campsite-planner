@@ -6,7 +6,12 @@ const baseUrl = `https://ridb.recreation.gov/api/v1/facilities/`
 
 function setSearchURL(params) {
   let url = new URL(baseUrl)
-  url.searchParams.set('limit', params.limit || 50)
+  
+  // Mapbox's directions matrix can handle at
+  // most 25 items at once. So these -1 for 
+  // the activity is 24
+  url.searchParams.set('limit', params.limit || 20)
+
   url.searchParams.set('offset', 0)
   url.searchParams.set('full', true)
   url.searchParams.set('activity', "CAMPING")
@@ -18,10 +23,9 @@ function setSearchURL(params) {
 }
 
 export async function search(params) {
-  const url = setSearchURL(params)
-  console.log(url)
+  const url = setSearchURL(params)  
   const response = await fetch(url)
-  const jsonBody = await response.json()
+  const jsonBody = await response.json()  
   return jsonBody.RECDATA.map(campground => {
     return new Lodging({
       lat: campground.FacilityLatitude,

@@ -1,5 +1,5 @@
 import Lodging from '../../models/Lodging'
-import {save, list, relation, execute} from '../../db/Repository'
+
 
 const util = require('util')
 
@@ -12,40 +12,40 @@ function debug(data) {
 }
 
 const getBestCampground = async (activityNames) => {
-  let activitesWithLodging = []
-  let result = await execute(`
-    MATCH (a)-[r:ROAD]->(l)
-    WHERE a.title IN ${JSON.stringify(Array.from(activityNames))}
-    RETURN distinct l,
-                    COLLECT(a) as acivities,
-                    COLLECT(a.title) as acivitiesAcountedFor,
-                    COLLECT(r.distance) as distances,
-                    AVG(r.distance) as averageTimeTo,
-                    COUNT(a)
+  // let activitesWithLodging = []
+  // let result = await execute(`
+  //   MATCH (a)-[r:ROAD]->(l)
+  //   WHERE a.title IN ${JSON.stringify(Array.from(activityNames))}
+  //   RETURN distinct l,
+  //                   COLLECT(a) as acivities,
+  //                   COLLECT(a.title) as acivitiesAcountedFor,
+  //                   COLLECT(r.distance) as distances,
+  //                   AVG(r.distance) as averageTimeTo,
+  //                   COUNT(a)
 
-    ORDER BY SIZE(acivities) DESC,
-              averageTimeTo
-    LIMIT 1
-  `)
+  //   ORDER BY SIZE(acivities) DESC,
+  //             averageTimeTo
+  //   LIMIT 1
+  // `)
 
-  let enitities = result.records.map(r => {
-    let [data, activities, acivitiesAcountedFor, distances] = r._fields
-    // console.log(activities, distances)
+  // let enitities = result.records.map(r => {
+  //   let [data, activities, acivitiesAcountedFor, distances] = r._fields
+  //   // console.log(activities, distances)
 
-    let relations = {}
+  //   let relations = {}
 
-    for (var i = 0; i < activities.length; i++) {
-      relations[acivitiesAcountedFor[i]] = distances[i]
-    }
+  //   for (var i = 0; i < activities.length; i++) {
+  //     relations[acivitiesAcountedFor[i]] = distances[i]
+  //   }
 
-    activitesWithLodging = acivitiesAcountedFor
+  //   activitesWithLodging = acivitiesAcountedFor
 
-    let lodging = new Lodging({ ...data.properties, id: data.identity.low })
-    lodging.activities = relations
-    return lodging
-  })
+  //   let lodging = new Lodging({ ...data.properties, id: data.identity.low })
+  //   lodging.activities = relations
+  //   return lodging
+  // })
 
-  return {entity: enitities[0], activitesWithLodging}
+  // return {entity: enitities[0], activitesWithLodging}
 }
 
 function parseResult(result) {
@@ -54,33 +54,33 @@ function parseResult(result) {
 
 async function index(req, res) {
 
-  let lodgings = []
+  // let lodgings = []
 
-  let names = await execute(`
-    MATCH (n:Activity)
-    WHERE (n)-->(:Lodging)
-    RETURN COLLECT(n.title)
-  `)
+  // let names = await execute(`
+  //   MATCH (n:Activity)
+  //   WHERE (n)-->(:Lodging)
+  //   RETURN COLLECT(n.title)
+  // `)
 
-  let activityNames = new Set(parseResult(names))
+  // let activityNames = new Set(parseResult(names))
 
-  let {entity, activitesWithLodging} = await getBestCampground(activityNames)
+  // let {entity, activitesWithLodging} = await getBestCampground(activityNames)
 
-  lodgings.push(entity)
+  // lodgings.push(entity)
 
-  let activitiesAccountedFor = new Set(activitesWithLodging)
+  // let activitiesAccountedFor = new Set(activitesWithLodging)
 
-  let remainingActivies = new Set([...activityNames].filter(x => !activitiesAccountedFor.has(x)))
+  // let remainingActivies = new Set([...activityNames].filter(x => !activitiesAccountedFor.has(x)))
 
 
-  while (remainingActivies.size > 0) {
-    let {entity, activitesWithLodging} = await getBestCampground(remainingActivies)
-    let activitiesAccountedFor = new Set(activitesWithLodging)
-    remainingActivies = new Set([...remainingActivies].filter(x => !activitiesAccountedFor.has(x)))
-    lodgings.push(entity)
-  }
+  // while (remainingActivies.size > 0) {
+  //   let {entity, activitesWithLodging} = await getBestCampground(remainingActivies)
+  //   let activitiesAccountedFor = new Set(activitesWithLodging)
+  //   remainingActivies = new Set([...remainingActivies].filter(x => !activitiesAccountedFor.has(x)))
+  //   lodgings.push(entity)
+  // }
 
-  res.status(200).json(lodgings)
+  // res.status(200).json(lodgings)
 }
 
 
